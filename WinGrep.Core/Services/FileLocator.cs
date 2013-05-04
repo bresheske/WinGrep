@@ -14,10 +14,40 @@ namespace WinGrep.Core.Services
 
         public IEnumerable<string> FindFiles(string root, string regex, bool recursive)
         {
-            return (recursive
-                ? Directory.GetFiles(root, "*", SearchOption.AllDirectories)
-                : Directory.GetFiles(root, "*", SearchOption.TopDirectoryOnly))
-                .Where(x => new Regex(regex).IsMatch(Path.GetFileName(x)));
+            var output = new List<string>();
+
+            if (!recursive)
+            {
+                try
+                {
+                    output.AddRange(Directory
+                        .GetFiles(root, "*", SearchOption.TopDirectoryOnly)
+                        .Where(x => new Regex(regex).IsMatch(Path.GetFileName(x))));
+                }
+                catch {}
+            }
+            else
+            {
+                RecurseDirectory(output, root, regex);
+            }
+
+
+            return output;
+        }
+
+        private void RecurseDirectory(List<string> files, string root, string regex)
+        {
+            if (!Directory.Exists(root))
+                return;
+
+            try
+            {
+                files.AddRange(Directory.GetFiles(root, "*", SearchOption.TopDirectoryOnly)
+                        .Where(x => new Regex(regex).IsMatch(Path.GetFileName(x))));
+                foreach (var d in Directory.GetDirectories(root))
+                    RecurseDirectory(files, d, regex);
+            }
+            catch { return; }
         }
 
         public IEnumerable<ContentsResult> FindInFiles(string root, string fileregex, string contentsregex, bool recursive)
@@ -27,11 +57,11 @@ namespace WinGrep.Core.Services
             foreach (var f in files)
             {
                 string[] text;
-                try 
-                { 
-                    text = File.ReadAllLines(f); 
+                try
+                {
+                    text = File.ReadAllLines(f);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 { 
                     /* TODO: Console output does not belong in the core's services. */
                     //Console.WriteLine(string.Format("Error: {0}", ex.Message)); 

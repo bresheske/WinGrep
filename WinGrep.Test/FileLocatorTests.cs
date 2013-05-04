@@ -26,7 +26,7 @@ namespace WinGrep.Test
             Assert.AreEqual(2, files.Count());
 
             files = new FileLocator().FindFiles(root, ".exe$", true);
-            Assert.AreEqual(3, files.Count());
+            Assert.AreEqual(4, files.Count());
         }
 
         [Test]
