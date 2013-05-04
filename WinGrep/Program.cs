@@ -1,6 +1,7 @@
 ﻿using NDesk.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,13 +24,16 @@ namespace WinGrep
             var options = new OptionSet()
             {
                 {"r=", ".net Regex for matching file names", o => regex = o},
-                {"d=", "root Directory for searching", o => regex = o},
+                {"d=", "root Directory for searching", o => rootdir = o},
                 {"R", "enable Recursive", o => recursive = true},
                 {"c=", "search regex for file Contents, not just names", o => {searchcontent = true; searchnames = false; contentregex = o;}},
                 {"h", "enable Recursive", o => showhelp = true},
             };
 
             options.Parse(args);
+
+            if (!Path.IsPathRooted(rootdir))
+                rootdir = Environment.CurrentDirectory + @"\" + rootdir;
 
             if (showhelp)
             {
