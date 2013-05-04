@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WinGrep.Core.Services;
 
@@ -26,8 +27,8 @@ namespace WinGrep
                 {"r=", ".net Regex for matching file names", o => regex = o},
                 {"d=", "root Directory for searching", o => rootdir = o},
                 {"R", "enable Recursive", o => recursive = true},
-                {"c=", "search regex for file Contents, not just names", o => {searchcontent = true; searchnames = false; contentregex = o;}},
-                {"h", "enable Recursive", o => showhelp = true},
+                {"c=", ".net regex for file Contents", o => {searchcontent = true; searchnames = false; contentregex = o;}},
+                {"h", "shows Help", o => showhelp = true},
             };
 
             options.Parse(args);
@@ -38,8 +39,24 @@ namespace WinGrep
             if (showhelp)
             {
                 options.WriteOptionDescriptions(Console.Out);
+                return;
             }
-            else if (searchnames)
+
+            /* Validation first, quit if needed. */
+            if (!new RegexValidator().Validate(regex))
+            {
+                Console.WriteLine(string.Format("Regex \"{0}\" is not a valid regular expression.", regex));
+                return;
+            }
+
+            if (!new RegexValidator().Validate(contentregex))
+            {
+                Console.WriteLine(string.Format("Regex \"{0}\" is not a valid regular expression.", contentregex));
+                return;
+            }
+
+            /* Execute our Grep. */
+            if (searchnames)
             {
                 var results = new FileLocator().FindFiles(rootdir, regex, recursive);
                 foreach (var r in results)

@@ -26,7 +26,18 @@ namespace WinGrep.Core.Services
             var files = FindFiles(root, fileregex, recursive);
             foreach (var f in files)
             {
-                var text = File.ReadAllLines(f);
+                string[] text;
+                try 
+                { 
+                    text = File.ReadAllLines(f); 
+                }
+                catch (Exception ex) 
+                { 
+                    /* TODO: Console output does not belong in the core's services. */
+                    //Console.WriteLine(string.Format("Error: {0}", ex.Message)); 
+                    continue; 
+                }
+
                 for (int i = 0; i < text.Length; i++)
                     if (new Regex(contentsregex).IsMatch(text[i]))
                         output.Add(new ContentsResult() { FileLine = i+1, FileName = f });
