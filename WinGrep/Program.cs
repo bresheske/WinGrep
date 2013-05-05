@@ -33,8 +33,7 @@ namespace WinGrep
 
             options.Parse(args);
 
-            if (!Path.IsPathRooted(rootdir))
-                rootdir = Environment.CurrentDirectory + @"\" + rootdir;
+            
 
             if (showhelp)
             {
@@ -54,6 +53,18 @@ namespace WinGrep
                 Console.WriteLine(string.Format("Regex \"{0}\" is not a valid regular expression.", contentregex));
                 return;
             }
+
+            try
+            {
+                if (!Path.IsPathRooted(rootdir))
+                    rootdir = Environment.CurrentDirectory + @"\" + rootdir;
+            }
+            catch 
+            {
+                Console.WriteLine("Directory \"{0}\" is not a well formed path.", rootdir);
+                return;
+            }
+
 
             /* Execute our Grep. */
             if (searchnames)

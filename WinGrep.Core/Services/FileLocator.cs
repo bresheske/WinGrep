@@ -22,7 +22,7 @@ namespace WinGrep.Core.Services
                 {
                     output.AddRange(Directory
                         .GetFiles(root, "*", SearchOption.TopDirectoryOnly)
-                        .Where(x => new Regex(regex).IsMatch(Path.GetFileName(x))));
+                        .Where(x => new Regex(regex).IsMatch(x)));
                 }
                 catch {}
             }
@@ -43,7 +43,7 @@ namespace WinGrep.Core.Services
             try
             {
                 files.AddRange(Directory.GetFiles(root, "*", SearchOption.TopDirectoryOnly)
-                        .Where(x => new Regex(regex).IsMatch(Path.GetFileName(x))));
+                        .Where(x => new Regex(regex).IsMatch(x)));
                 foreach (var d in Directory.GetDirectories(root))
                     RecurseDirectory(files, d, regex);
             }

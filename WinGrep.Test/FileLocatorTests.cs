@@ -22,8 +22,8 @@ namespace WinGrep.Test
             Assert.AreEqual(1, files.Count());
             Assert.AreEqual(@"C:\Projects\WinGrep\WinGrep.sln", files.ElementAt(0));
 
-            files = new FileLocator().FindFiles(root, "^W", false);
-            Assert.AreEqual(2, files.Count());
+            files = new FileLocator().FindFiles(root, "W", false);
+            Assert.AreEqual(3, files.Count());
 
             files = new FileLocator().FindFiles(root, ".exe$", true);
             Assert.AreEqual(4, files.Count());
