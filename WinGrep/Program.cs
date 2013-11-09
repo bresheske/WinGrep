@@ -7,6 +7,10 @@ namespace WinGrep
 {
     public class Program
     {
+        /// <summary>
+        /// WinGrep execution.
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var regex = ".*";
@@ -36,7 +40,7 @@ namespace WinGrep
                 return;
             }
 
-            /* Validation first, quit if needed. */
+            // Validation first, quit if needed.
             if (!new RegexValidator().Validate(regex))
             {
                 Console.WriteLine(string.Format("Regex \"{0}\" is not a valid regular expression.", regex));
@@ -61,7 +65,7 @@ namespace WinGrep
             }
 
 
-            /* Execute our Grep. */
+            // Execute our Grep.
             if (searchnames)
             {
                 var results = new FileLocator().FindFiles(rootdir, regex, recursive);
