@@ -1,5 +1,6 @@
 ﻿
 using NUnit.Framework;
+using System;
 using System.Linq;
 using WinGrep.Core.Services;
 
@@ -13,7 +14,7 @@ namespace WinGrep.Test.Tests
         public void TestFileContents()
         {
             // Test the location of the string 'TestFileContents'
-            var root = @"C:\Projects\WinGrep";
+            var root = Environment.CurrentDirectory + @"\..\..\..\";
             var regex = ".cs$";
             var contents = "TestFileContents";
             

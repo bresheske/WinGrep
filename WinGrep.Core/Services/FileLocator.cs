@@ -16,17 +16,29 @@ namespace WinGrep.Core.Services
         /// <param name="regex">Regex to match file names.</param>
         /// <param name="recursive">True to recurse subdirectories.</param>
         /// <returns></returns>
-        public IEnumerable<string> FindFiles(string root, string regex, bool recursive)
+        public IEnumerable<ContentsResult> FindFiles(string root, string regex, bool recursive)
         {
-            var output = new List<string>();
+            var output = new List<ContentsResult>();
 
             if (!recursive)
             {
                 try
                 {
-                    output.AddRange(Directory
+                    var reg = new Regex(regex);
+                    var files = Directory
                         .GetFiles(root, "*", SearchOption.TopDirectoryOnly)
-                        .Where(x => new Regex(regex).IsMatch(x)));
+                        .Where(x => reg.IsMatch(x));
+                    foreach (var f in files)
+                    {
+                        var matches = reg.Matches(f)
+                            .Cast<Match>();
+                        output.Add(new ContentsResult()
+                        {
+                            CaptureGroups = matches
+                                .SelectMany(x => x.Groups.Cast<Group>().Select(y => y.Value)),
+                            FileName = f
+                        });
+                    }
                 }
                 catch {}
             }
@@ -56,7 +68,7 @@ namespace WinGrep.Core.Services
                 string[] text;
                 try
                 {
-                    text = File.ReadAllLines(f);
+                    text = File.ReadAllLines(f.FileName);
                 }
                 catch (Exception)
                 { 
@@ -66,7 +78,7 @@ namespace WinGrep.Core.Services
 
                 for (int i = 0; i < text.Length; i++)
                     if (new Regex(contentsregex).IsMatch(text[i]))
-                        output.Add(new ContentsResult() { FileLine = i+1, FileName = f });
+                        output.Add(new ContentsResult() { FileLine = i+1, FileName = f.FileName });
 
             }
             return output;
@@ -74,7 +86,7 @@ namespace WinGrep.Core.Services
 
         #region Private Methods
 
-        private void RecurseDirectory(List<string> files, string root, string regex)
+        private void RecurseDirectory(List<ContentsResult> files, string root, string regex)
         {
             if (!Directory.Exists(root))
                 return;
@@ -82,7 +94,8 @@ namespace WinGrep.Core.Services
             try
             {
                 files.AddRange(Directory.GetFiles(root, "*", SearchOption.TopDirectoryOnly)
-                        .Where(x => new Regex(regex).IsMatch(x)));
+                        .Where(x => new Regex(regex).IsMatch(x))
+                        .Select(x => new ContentsResult(){ FileName = x}));
                 foreach (var d in Directory.GetDirectories(root))
                     RecurseDirectory(files, d, regex);
             }
