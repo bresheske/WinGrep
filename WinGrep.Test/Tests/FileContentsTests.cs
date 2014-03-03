@@ -27,5 +27,17 @@ namespace WinGrep.Test.Tests
             Assert.AreEqual(0, results.Count());
         }
 
+        [Test]
+        public void TestMatching()
+        {
+            var root = Environment.CurrentDirectory + @"\..\..\..\";
+            var regex = @"\.txt";
+            var contents = @"(\d{5})\s([a-z|A-Z]+)";
+
+            var results = new FileLocator().FindInFiles(root, regex, contents, true);
+            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual(3, results.ElementAt(0).CaptureGroups.Count());
+        }
+
     }
 }

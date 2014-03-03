@@ -30,12 +30,10 @@ namespace WinGrep.Core.Services
                         .Where(x => reg.IsMatch(x));
                     foreach (var f in files)
                     {
-                        var matches = reg.Matches(f)
-                            .Cast<Match>();
+                        var match = reg.Match(f);
                         output.Add(new ContentsResult()
                         {
-                            CaptureGroups = matches
-                                .SelectMany(x => x.Groups.Cast<Group>().Select(y => y.Value)),
+                            CaptureGroups = match.Groups.Cast<Group>().Select(y => y.Value),
                             FileName = f
                         });
                     }
@@ -76,10 +74,18 @@ namespace WinGrep.Core.Services
                     continue; 
                 }
 
+                var reg = new Regex(contentsregex);
                 for (int i = 0; i < text.Length; i++)
-                    if (new Regex(contentsregex).IsMatch(text[i]))
-                        output.Add(new ContentsResult() { FileLine = i+1, FileName = f.FileName });
-
+                    if (reg.IsMatch(text[i]))
+                    {
+                        var match = reg.Match(text[i]);
+                        output.Add(new ContentsResult()
+                        {
+                            CaptureGroups = match.Groups.Cast<Group>().Select(y => y.Value),
+                            FileName = f.FileName,
+                            FileLine = i + 1
+                        });
+                    }
             }
             return output;
         }

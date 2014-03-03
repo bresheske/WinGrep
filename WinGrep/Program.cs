@@ -1,6 +1,8 @@
 ﻿using NDesk.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using WinGrep.Core.Models;
 using WinGrep.Core.Services;
 
 namespace WinGrep
@@ -66,18 +68,15 @@ namespace WinGrep
 
 
             // Execute our Grep.
+            var formatter = new ResultFormatter();
+            IEnumerable<ContentsResult> results;
             if (searchnames)
-            {
-                var results = new FileLocator().FindFiles(rootdir, regex, recursive);
-                foreach (var r in results)
-                    Console.WriteLine(r);
-            }
-            else if (searchcontent)
-            {
-                var results = new FileLocator().FindInFiles(rootdir, regex, contentregex, recursive);
-                foreach (var r in results)
-                    Console.WriteLine(string.Format("{0}:{1}", r.FileName, r.FileLine));
-            }
+                results = new FileLocator().FindFiles(rootdir, regex, recursive);
+            else
+                results = new FileLocator().FindInFiles(rootdir, regex, contentregex, recursive);
+
+            foreach (var r in results)
+                Console.Write(formatter.FormatResult(r));
         }
     }
 }

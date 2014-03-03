@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinGrep", "WinGrep\WinGrep.csproj", "{C3EE8B52-A588-4410-9403-7C3695AA3B3D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinGrep.Core", "WinGrep.Core\WinGrep.Core.csproj", "{465A1FEB-3B0E-453D-B8BA-9E3BA2560664}"
@@ -12,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E46191
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28B211E4-D7D2-45A3-B320-303BA5FEE7D4}"
+	ProjectSection(SolutionItems) = preProject
+		Test.txt = Test.txt
 	EndProjectSection
 EndProject
 Global
